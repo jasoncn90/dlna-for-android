@@ -28,9 +28,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <service android:name="com.gmcc.dlna.sdk.DlnaService"/>
-        <service android:name="com.gmcc.dlna.sdk.dms.mediaserver.MediaServerService"/>
-        <service android:name="com.gmcc.dlna.sdk.dms.httpserver.HttpServerServiceImpl"/>
+        <service android:name="com.jcn.dlna.new_sdk.cling.UpnpServiceImpl"/>
     </application>
 
 </manifest>

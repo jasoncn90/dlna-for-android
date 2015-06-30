@@ -1,34 +1,54 @@
 package com.jcn.dlna;
 
-import android.support.v7.app.ActionBarActivity;
-import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuItem;
+import java.util.logging.Logger;
 
-public class MainActivity extends ActionBarActivity {
+import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.widget.Button;
+
+import com.jcn.dlna.new_sdk.DlnaService;
+import com.jcn.dlna.new_sdk.device.DeviceManager.OnSearchDmrDeviceListener;
+import com.jcn.dlna.new_sdk.device.DmrDevice;
+import com.jcn.dlna.new_sdk.device.DmrDeviceManager;
+
+public class MainActivity extends AppCompatActivity {
+
+	private static final Logger log = Logger.getLogger(MainActivity.class
+			.getName());
+	private Button btn;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
+		DlnaService.getInstance().bind(this);
+		btn = (Button) findViewById(R.id.btn);
+		btn.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				DmrDeviceManager dm = new DmrDeviceManager();
+				dm.searchDmrDevices(new OnSearchDmrDeviceListener() {
+
+					@Override
+					public void onDeviceRemove(DmrDevice device) {
+						log.info("onDeviceRemove " + device.getName());
+					}
+
+					@Override
+					public void onDeviceAdd(DmrDevice device) {
+						log.info("onDeviceAdd " + device.getName());
+					}
+				});
+			}
+		});
 	}
 
 	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.main, menu);
-		return true;
-	}
-
-	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
-		// Handle action bar item clicks here. The action bar will
-		// automatically handle clicks on the Home/Up button, so long
-		// as you specify a parent activity in AndroidManifest.xml.
-		int id = item.getItemId();
-		if (id == R.id.action_settings) {
-			return true;
-		}
-		return super.onOptionsItemSelected(item);
+	protected void onDestroy() {
+		DlnaService.getInstance().unbind(this);
+		super.onDestroy();
 	}
 }
