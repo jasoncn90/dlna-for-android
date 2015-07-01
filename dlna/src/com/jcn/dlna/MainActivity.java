@@ -17,6 +17,7 @@ import com.jcn.dlna.new_sdk.device.DmrDevice;
 import com.jcn.dlna.new_sdk.device.DmrDeviceManager;
 import com.jcn.dlna.new_sdk.device.DmrDeviceManager.OnSearchDmrDeviceListener;
 import com.jcn.dlna.new_sdk.dmc.ActionController.ActionResultListener;
+import com.jcn.dlna.new_sdk.dmc.renderingcontrol.GetMuteImpl.GetMuteListener;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -51,6 +52,14 @@ public class MainActivity extends AppCompatActivity {
 								+ errorCode + " " + errorMsg);
 					}
 				});
+				device.getMute(new GetMuteListener() {
+
+					@Override
+					public void onResult(boolean success, int errorCode,
+							String errorMsg, boolean mute) {
+
+					}
+				});
 			}
 		});
 		final DmrDeviceManager dm = new DmrDeviceManager();
@@ -58,6 +67,7 @@ public class MainActivity extends AppCompatActivity {
 
 			@Override
 			public void onClick(View v) {
+				dm.removeAllDevices();
 				dm.searchDmrDevices(new OnSearchDmrDeviceListener() {
 
 					@Override

@@ -10,12 +10,12 @@ import android.text.TextUtils;
 
 import com.jcn.dlna.new_sdk.dmc.ActionController;
 import com.jcn.dlna.new_sdk.dmc.ActionController.ActionResultListener;
+import com.jcn.dlna.new_sdk.dmc.renderingcontrol.GetMuteImpl.GetMuteListener;
+import com.jcn.dlna.new_sdk.dmc.renderingcontrol.GetVolumeImpl.GetVolumeListener;
 
 /**
- * @author Jason
- * 
- *         MediaRenderer device,created by cling device, each renderer device
- *         has an action controller
+ * MediaRenderer device,created by cling device, each renderer device has an
+ * action controller
  */
 public class DmrDevice implements Comparable<DmrDevice> {
 
@@ -47,6 +47,19 @@ public class DmrDevice implements Comparable<DmrDevice> {
 	public synchronized void setMute(boolean desiredMute,
 			ActionResultListener listener) {
 		ac.setMute(this, desiredMute, listener);
+	}
+
+	public synchronized void getMute(GetMuteListener listener) {
+		ac.getMute(this, listener);
+	}
+
+	public synchronized void setVolume(long volume,
+			ActionResultListener listener) {
+		ac.setVolume(this, volume, listener);
+	}
+
+	public synchronized void getVolume(GetVolumeListener listener) {
+		ac.getVolume(this, listener);
 	}
 
 	public String getName() {
