@@ -17,7 +17,18 @@ public class DmrDeviceManager extends DeviceManager {
 
 	public void searchDmrDevices(OnSearchDmrDeviceListener listener) {
 		this.listener = listener;
+		dmrDevices.clear();
 		super.search();
+	}
+
+	public Set<DmrDevice> getDevices() {
+		return dmrDevices;
+	}
+
+	public interface OnSearchDmrDeviceListener {
+		public void onDeviceAdd(DmrDevice device);
+
+		public void onDeviceRemove(DmrDevice device);
 	}
 
 	private class OnReceiveDeviceSearchResult extends OnSearchDeviceCallback {
@@ -26,8 +37,9 @@ public class DmrDeviceManager extends DeviceManager {
 		public void onDeviceAdd(Device device) {
 			if (device.getType().toString().contains("MediaRenderer")) {
 				DmrDevice dmrDevice = new DmrDevice(device);
-				listener.onDeviceAdd(dmrDevice);
-				dmrDevices.add(dmrDevice);
+				if (dmrDevices.add(dmrDevice)) {
+					listener.onDeviceAdd(dmrDevice);
+				}
 			}
 		}
 
@@ -37,6 +49,7 @@ public class DmrDeviceManager extends DeviceManager {
 				for (DmrDevice dmrDevice : dmrDevices) {
 					if (device.getIdentity().getUdn().toString()
 							.equals(dmrDevice.getUdn())) {
+						dmrDevices.remove(dmrDevice);
 						listener.onDeviceRemove(dmrDevice);
 					}
 				}

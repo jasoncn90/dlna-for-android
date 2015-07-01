@@ -2,6 +2,7 @@ package com.jcn.dlna.new_sdk.device;
 
 import java.util.logging.Logger;
 
+import org.teleal.cling.android.AndroidUpnpService;
 import org.teleal.cling.model.meta.Device;
 import org.teleal.cling.registry.DefaultRegistryListener;
 import org.teleal.cling.registry.Registry;
@@ -20,17 +21,15 @@ public abstract class DeviceManager {
 	}
 
 	protected void search() {
-
-		DlnaService.getInstance().getService().getRegistry()
-				.addListener(listener);
-		DlnaService.getInstance().getService().getControlPoint().search();
-
+		AndroidUpnpService service = DlnaService.getInstance().getService();
+		service.getRegistry().addListener(listener);
+		service.getControlPoint().search();
 	}
 
-	public interface OnSearchDmrDeviceListener {
-		public void onDeviceAdd(DmrDevice device);
-
-		public void onDeviceRemove(DmrDevice device);
+	public void removeAllDevices() {
+		AndroidUpnpService service = DlnaService.getInstance().getService();
+		service.getRegistry().removeAllRemoteDevices();
+		service.getRegistry().removeAllLocalDevices();
 	}
 
 	public abstract class OnSearchDeviceCallback {

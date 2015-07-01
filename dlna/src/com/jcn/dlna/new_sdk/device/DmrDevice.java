@@ -8,10 +8,20 @@ import org.teleal.cling.model.types.UDAServiceType;
 
 import android.text.TextUtils;
 
+import com.jcn.dlna.new_sdk.dmc.ActionController;
+import com.jcn.dlna.new_sdk.dmc.ActionController.ActionResultListener;
+
+/**
+ * @author Jason
+ * 
+ *         MediaRenderer device,created by cling device, each renderer device
+ *         has an action controller
+ */
 public class DmrDevice implements Comparable<DmrDevice> {
 
 	private Device<?, ?, ?> device;
 	private String friendlyName = "";
+	private ActionController ac;
 
 	public static enum PlayState {
 		PLAYING, LOADING, STOPPED, PAUSED, FALSE
@@ -19,6 +29,7 @@ public class DmrDevice implements Comparable<DmrDevice> {
 
 	protected DmrDevice(Device<?, ?, ?> device) {
 		this.device = device;
+		ac = new ActionController();
 		String friendlyName = device.getDetails().getFriendlyName();
 		if (!TextUtils.isEmpty(friendlyName)) {
 			try {
@@ -33,6 +44,11 @@ public class DmrDevice implements Comparable<DmrDevice> {
 		}
 	}
 
+	public synchronized void setMute(boolean desiredMute,
+			ActionResultListener listener) {
+		ac.setMute(this, desiredMute, listener);
+	}
+
 	public String getName() {
 		return friendlyName;
 	}
@@ -41,7 +57,7 @@ public class DmrDevice implements Comparable<DmrDevice> {
 		return device.getType().toString();
 	}
 
-	protected Service<?, ?> findService(UDAServiceType udaServiceType) {
+	public Service<?, ?> findService(UDAServiceType udaServiceType) {
 		return device.findService(udaServiceType);
 	}
 
@@ -81,7 +97,9 @@ public class DmrDevice implements Comparable<DmrDevice> {
 		}
 		if (TextUtils.isEmpty(this.getUdn())) {
 			if (TextUtils.isEmpty(another.getUdn())) {
-				return 0;
+				if (this.getName().equals(another.getName())) {
+					return 0;
+				}
 			} else {
 				return -1;
 			}
